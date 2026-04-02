@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-[#F2F2F7] dark:bg-[#121212] text-[#3A3A3C] dark:text-[#E5E5EA] transition-colors;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-[#1C1C1E] dark:text-white;
+  }
+}
+
+@layer components {
+  .apple-card {
+    @apply bg-white dark:bg-[#1E1E1E] rounded-2xl border border-black/5 dark:border-white/10 shadow-lg dark:shadow-none transition-all;
+  }
+  .apple-input {
+    @apply bg-[#F9F9FB] dark:bg-[#2A2A2A] border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-[#1C1C1E] dark:text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+}

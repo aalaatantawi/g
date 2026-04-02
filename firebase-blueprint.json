@@ -1,0 +1,128 @@
+{
+  "entities": {
+    "Patient": {
+      "title": "Patient",
+      "description": "A patient record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Patient's name" },
+        "maternalAge": { "type": "number", "description": "Patient's age" },
+        "ownerId": { "type": "string", "description": "User ID of the doctor" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" },
+        "updatedAt": { "type": "timestamp", "description": "Last update timestamp" }
+      },
+      "required": ["name", "maternalAge", "ownerId", "createdAt", "updatedAt"]
+    },
+    "Scan": {
+      "title": "Scan",
+      "description": "An ultrasound scan report for a patient",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string", "description": "ID of the patient" },
+        "date": { "type": "string", "description": "Date of the scan" },
+        "clinicalContext": { "type": "string", "description": "Indication for the scan" },
+        "reportMarkdown": { "type": "string", "description": "The generated report" },
+        "gaWeeks": { "type": "number", "description": "Gestational age weeks" },
+        "gaDays": { "type": "number", "description": "Gestational age days" },
+        "edd": { "type": "string", "description": "Estimated Due Date" },
+        "mediaFiles": { "type": "array", "items": { "type": "string" }, "description": "List of media URLs" },
+        "ownerId": { "type": "string", "description": "User ID of the doctor" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      },
+      "required": ["patientId", "date", "clinicalContext", "reportMarkdown", "ownerId", "createdAt"]
+    },
+    "Folder": {
+      "title": "Folder",
+      "description": "A folder in the vault",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Folder name" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      },
+      "required": ["name", "createdAt"]
+    },
+    "File": {
+      "title": "File",
+      "description": "A file in the vault",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "File name" },
+        "folderId": { "type": "string", "description": "Folder ID" },
+        "size": { "type": "string", "description": "File size" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      },
+      "required": ["name", "size", "createdAt"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "A note in the vault",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Note title" },
+        "content": { "type": "string", "description": "Note content" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      },
+      "required": ["title", "createdAt"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "A member in the vault",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Member name" },
+        "role": { "type": "string", "description": "Member role" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      },
+      "required": ["name", "role", "createdAt"]
+    },
+    "ClinicProfile": {
+      "title": "ClinicProfile",
+      "description": "Clinic branding settings for Pro users",
+      "type": "object",
+      "properties": {
+        "doctorName": { "type": "string", "description": "Doctor's full name and titles" },
+        "clinicName": { "type": "string", "description": "Clinic name" },
+        "contactInfo": { "type": "string", "description": "Header/Footer contact info" },
+        "logoUrl": { "type": "string", "description": "URL of the clinic logo" }
+      },
+      "required": ["doctorName", "clinicName", "contactInfo"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "clinicProfile": { "$ref": "#/entities/ClinicProfile" },
+          "isPro": { "type": "boolean" },
+          "reportCount": { "type": "number" }
+        }
+      },
+      "description": "User profile and settings"
+    },
+    "/users/{uid}/patients/{patientId}": {
+      "schema": { "$ref": "#/entities/Patient" },
+      "description": "Stores patient records"
+    },
+    "/users/{uid}/scans/{scanId}": {
+      "schema": { "$ref": "#/entities/Scan" },
+      "description": "Stores scan reports"
+    },
+    "/users/{uid}/folders/{folderId}": {
+      "schema": { "$ref": "#/entities/Folder" },
+      "description": "Stores folders"
+    },
+    "/users/{uid}/files/{fileId}": {
+      "schema": { "$ref": "#/entities/File" },
+      "description": "Stores files"
+    },
+    "/users/{uid}/notes/{noteId}": {
+      "schema": { "$ref": "#/entities/Note" },
+      "description": "Stores notes"
+    },
+    "/users/{uid}/members/{memberId}": {
+      "schema": { "$ref": "#/entities/Member" },
+      "description": "Stores members"
+    }
+  }
+}

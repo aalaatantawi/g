@@ -1,0 +1,229 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users/{uid}/patients
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, 1-100 chars)
+    //   - maternalAge: number (required, 10-100)
+    //   - ownerId: string (required, immutable)
+    //   - createdAt: timestamp (required, immutable)
+    //   - updatedAt: timestamp (required)
+    //
+    // Collection: users/{uid}/scans
+    // Document ID: auto-generated
+    // Fields:
+    //   - patientId: string (required)
+    //   - date: string (required)
+    //   - clinicalContext: string (required, 1-5000 chars)
+    //   - reportMarkdown: string (required, 1-50000 chars)
+    //   - gaWeeks: number (optional)
+    //   - gaDays: number (optional)
+    //   - edd: string (optional)
+    //   - mediaFiles: list (optional, max 10 URLs)
+    //   - ownerId: string (required, immutable)
+    //   - createdAt: timestamp (required, immutable)
+    //   - updatedAt: timestamp (optional)
+    //
+    // Collection: users/{uid}/folders
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, 1-100 chars)
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // Collection: users/{uid}/files
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, 1-200 chars)
+    //   - folderId: string (optional)
+    //   - size: string (required, 1-50 chars)
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // Collection: users/{uid}/notes
+    // Document ID: auto-generated
+    // Fields:
+    //   - title: string (required, 1-200 chars)
+    //   - content: string (optional, 0-50000 chars)
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // Collection: users/{uid}/members
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, 1-100 chars)
+    //   - role: string (required, 1-50 chars)
+    //   - createdAt: timestamp (required, immutable)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidPatient(data) {
+      return hasOnlyAllowedFields(['name', 'maternalAge', 'ownerId', 'createdAt', 'updatedAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.maternalAge is number && data.maternalAge >= 10 && data.maternalAge <= 100 &&
+             data.ownerId is string && data.ownerId == request.auth.uid &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp;
+    }
+
+    function isValidScan(data) {
+      return hasOnlyAllowedFields(['patientId', 'date', 'clinicalContext', 'reportMarkdown', 'ownerId', 'createdAt', 'gaWeeks', 'gaDays', 'edd', 'mediaFiles', 'updatedAt']) &&
+             data.patientId is string && data.patientId.size() > 0 && data.patientId.size() <= 100 &&
+             data.date is string && data.date.size() > 0 && data.date.size() <= 50 &&
+             data.clinicalContext is string && data.clinicalContext.size() <= 5000 &&
+             data.reportMarkdown is string && data.reportMarkdown.size() <= 50000 &&
+             (!('gaWeeks' in data) || data.gaWeeks is number) &&
+             (!('gaDays' in data) || data.gaDays is number) &&
+             (!('edd' in data) || (data.edd is string && data.edd.size() <= 100)) &&
+             (!('mediaFiles' in data) || (data.mediaFiles is list && data.mediaFiles.size() <= 10)) &&
+             (!('updatedAt' in data) || data.updatedAt is timestamp) &&
+             data.ownerId is string && data.ownerId == request.auth.uid &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidFolder(data) {
+      return hasOnlyAllowedFields(['name', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidFile(data) {
+      return hasOnlyAllowedFields(['name', 'folderId', 'size', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             (!('folderId' in data) || (data.folderId is string && data.folderId.size() <= 100)) &&
+             data.size is string && data.size.size() > 0 && data.size.size() <= 50 &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidNote(data) {
+      return hasOnlyAllowedFields(['title', 'content', 'createdAt']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             (!('content' in data) || (data.content is string && data.content.size() <= 50000)) &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidMember(data) {
+      return hasOnlyAllowedFields(['name', 'role', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.role is string && data.role.size() > 0 && data.role.size() <= 50 &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidClinicProfile(data) {
+      return hasOnlyAllowedFields(['doctorName', 'doctorTitles', 'clinicName', 'contactInfo', 'logoUrl']) &&
+             data.doctorName is string && data.doctorName.size() > 0 && data.doctorName.size() <= 200 &&
+             data.doctorTitles is string && data.doctorTitles.size() <= 200 &&
+             data.clinicName is string && data.clinicName.size() > 0 && data.clinicName.size() <= 200 &&
+             data.contactInfo is string && data.contactInfo.size() > 0 && data.contactInfo.size() <= 1000 &&
+             (!('logoUrl' in data) || (data.logoUrl is string && data.logoUrl.size() <= 2000));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    match /users/{uid} {
+      // Allow user to read their own root document and all sub-data
+      allow read: if isAuthenticated() && request.auth.uid == uid;
+      
+      // Allow user to create their document with 0 or 1 reports and not pro
+      allow create: if isAuthenticated() && request.auth.uid == uid && 
+                    hasOnlyAllowedFields(['reportsCount', 'isPro', 'clinicProfile']) &&
+                    (request.resource.data.reportsCount == 0 || request.resource.data.reportsCount == 1) &&
+                    (request.resource.data.isPro == false || request.resource.data.isPro == true);
+                    
+      // Allow user to increment their reportsCount, upgrade to Pro, or update clinicProfile
+      allow update: if isAuthenticated() && request.auth.uid == uid && (
+                      (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reportsCount']) &&
+                       request.resource.data.reportsCount == resource.data.reportsCount + 1)
+                      ||
+                      (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isPro']) &&
+                       request.resource.data.isPro == true)
+                      ||
+                      (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clinicProfile']) &&
+                       isValidClinicProfile(request.resource.data.clinicProfile))
+                    );
+
+      // Recursive match for all subcollections under the user
+      match /{allSubcollections=**} {
+        allow read: if isAuthenticated() && request.auth.uid == uid;
+      }
+      
+      match /patients/{patientId} {
+        allow create: if isAuthenticated() && request.auth.uid == uid && isValidPatient(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == uid && isValidPatient(request.resource.data) && areImmutableFieldsUnchanged(['ownerId', 'createdAt']);
+        allow delete: if isAuthenticated() && request.auth.uid == uid;
+      }
+      
+      match /scans/{scanId} {
+        allow create: if isAuthenticated() && request.auth.uid == uid && isValidScan(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == uid && isValidScan(request.resource.data) && areImmutableFieldsUnchanged(['ownerId', 'createdAt']);
+        allow delete: if isAuthenticated() && request.auth.uid == uid;
+      }
+
+      match /folders/{folderId} {
+        allow create: if isAuthenticated() && request.auth.uid == uid && isValidFolder(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == uid && isValidFolder(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+        allow delete: if isAuthenticated() && request.auth.uid == uid;
+      }
+
+      match /files/{fileId} {
+        allow create: if isAuthenticated() && request.auth.uid == uid && isValidFile(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == uid && isValidFile(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+        allow delete: if isAuthenticated() && request.auth.uid == uid;
+      }
+
+      match /notes/{noteId} {
+        allow create: if isAuthenticated() && request.auth.uid == uid && isValidNote(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == uid && isValidNote(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+        allow delete: if isAuthenticated() && request.auth.uid == uid;
+      }
+
+      match /members/{memberId} {
+        allow create: if isAuthenticated() && request.auth.uid == uid && isValidMember(request.resource.data);
+        allow update: if isAuthenticated() && request.auth.uid == uid && isValidMember(request.resource.data) && areImmutableFieldsUnchanged(['createdAt']);
+        allow delete: if isAuthenticated() && request.auth.uid == uid;
+      }
+    }
+
+    match /customers/{uid} {
+      allow read: if isAuthenticated() && request.auth.uid == uid;
+      
+      match /checkout_sessions/{id} {
+        allow read, write: if isAuthenticated() && request.auth.uid == uid;
+      }
+      match /portal_sessions/{id} {
+        allow read, write: if isAuthenticated() && request.auth.uid == uid;
+      }
+      match /subscriptions/{id} {
+        allow read: if isAuthenticated() && request.auth.uid == uid;
+      }
+      match /payments/{id} {
+        allow read: if isAuthenticated() && request.auth.uid == uid;
+      }
+    }
+  }
+}
