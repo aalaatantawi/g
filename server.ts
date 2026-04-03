@@ -76,10 +76,23 @@ async function startServer() {
 
         if (userId) {
           const fbAdmin = getFirebaseAdmin();
+          
+          // Retrieve the line items to determine the price ID and tier
+          const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+          const priceId = lineItems.data[0]?.price?.id;
+          
+          let tier = 'starter';
+          if (priceId === PRICES.consultant.monthly || priceId === PRICES.consultant.yearly) {
+            tier = 'consultant';
+          } else if (priceId === PRICES.specialist.monthly || priceId === PRICES.specialist.yearly) {
+            tier = 'specialist';
+          }
+
           await fbAdmin.firestore().collection("users").doc(userId).set({
-            isPro: true
+            isPro: true,
+            tier: tier
           }, { merge: true });
-          console.log(`Successfully upgraded user ${userId} to Pro`);
+          console.log(`Successfully upgraded user ${userId} to Pro (${tier})`);
         }
       }
 

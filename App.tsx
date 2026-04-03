@@ -53,6 +53,7 @@ const App: React.FC = () => {
   const [userSub, setUserSub] = useState<any>(null);
   const [isManagingSub, setIsManagingSub] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState<string | null>(null);
+  const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
 
   const voiceAssistantRef = useRef<VoiceAssistantHandle>(null);
 
@@ -69,7 +70,7 @@ const App: React.FC = () => {
     try {
       const portalSessionsRef = collection(db, 'customers', user.uid, 'portal_sessions');
       const docRef = await addDoc(portalSessionsRef, {
-        return_url: window.location.origin
+        return_url: window.location.origin + '/settings'
       });
       
       let timeoutId: NodeJS.Timeout;
@@ -78,7 +79,8 @@ const App: React.FC = () => {
         if (data?.url) {
           clearTimeout(timeoutId);
           unsubscribe();
-          window.location.href = data.url;
+          window.open(data.url, '_blank');
+          setIsManagingSub(false);
         }
       }, (error) => {
         console.error("Portal session snapshot error:", error);
@@ -437,48 +439,85 @@ const App: React.FC = () => {
                 >
                   <i className="fas fa-history text-[10px]"></i> History
                 </button>
-                <button 
-                  type="button"
-                  onClick={() => {
-                    if (userSub?.tier === 'consultant') {
-                      setShowClinicSettings(true);
-                    } else {
-                      alert("Clinic Branding is exclusive to the Consultant plan. Upgrade your subscription to unlock this feature.");
-                      setShowPaywall(true);
-                    }
-                  }}
-                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
-                >
-                  {userSub?.tier === 'consultant' ? (
-                    <i className="fas fa-palette text-[10px] text-[#D4AF37]"></i>
-                  ) : (
-                    <i className="fas fa-lock text-[10px] text-gray-400"></i>
-                  )}
-                  Branding
-                </button>
-                {userSub?.hasActiveStripeSub && (
+                <div className="relative">
                   <button 
                     type="button"
-                    onClick={handleManageSubscription}
-                    disabled={isManagingSub}
-                    className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                    onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
+                    className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                   >
-                    <i className="fas fa-cog text-[10px]"></i> {isManagingSub ? '...' : 'Subscription'}
+                    <i className="fas fa-cog text-[10px]"></i> Settings
                   </button>
-                )}
+                  {showSettingsDropdown && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setShowSettingsDropdown(false)}></div>
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                        <button 
+                          onClick={() => {
+                            setShowSettingsDropdown(false);
+                            if (userSub?.tier === 'consultant') {
+                              setShowClinicSettings(true);
+                            } else {
+                              alert("Clinic Branding is exclusive to the Consultant plan. Upgrade your subscription to unlock this feature.");
+                              setShowPaywall(true);
+                            }
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        >
+                          {userSub?.tier === 'consultant' ? (
+                            <i className="fas fa-palette text-[10px] text-[#D4AF37]"></i>
+                          ) : (
+                            <i className="fas fa-lock text-[10px] text-gray-400"></i>
+                          )}
+                          Clinic Branding
+                        </button>
+                        
+                        {userSub?.hasActiveStripeSub && (
+                          <button 
+                            onClick={() => {
+                              setShowSettingsDropdown(false);
+                              handleManageSubscription();
+                            }}
+                            disabled={isManagingSub}
+                            className="w-full text-left px-4 py-2 text-[10px] text-gray-400 hover:text-gray-600 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50 mt-1 transition-colors"
+                          >
+                            <i className="fas fa-file-invoice-dollar"></i> 
+                            {isManagingSub ? 'Redirecting...' : 'Billing & Subscription'}
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
               </>
             ) : (
               <>
-                <button 
-                  type="button"
-                  onClick={() => {
-                    alert("Unlock Custom Clinic Branding! Upgrade to the Consultant plan to add your own logo, doctor name, and customize report colors.");
-                    setShowPaywall(true);
-                  }}
-                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
-                >
-                  <i className="fas fa-lock text-[10px] text-gray-400"></i> Branding
-                </button>
+                <div className="relative">
+                  <button 
+                    type="button"
+                    onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
+                    className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                  >
+                    <i className="fas fa-cog text-[10px]"></i> Settings
+                  </button>
+                  {showSettingsDropdown && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setShowSettingsDropdown(false)}></div>
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                        <button 
+                          onClick={() => {
+                            setShowSettingsDropdown(false);
+                            alert("Unlock Custom Clinic Branding! Upgrade to the Consultant plan to add your own logo, doctor name, and customize report colors.");
+                            setShowPaywall(true);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                        >
+                          <i className="fas fa-lock text-[10px] text-gray-400"></i>
+                          Clinic Branding
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
                 <button 
                   type="button"
                   onClick={() => {
