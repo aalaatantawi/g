@@ -1,5 +1,4 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -7,9 +6,12 @@ import firebaseConfig from './firebase-applet-config.json';
 
 // Initialize Firebase
 console.log("Initializing Firebase...");
+console.log("Loaded Firebase Config API Key:", firebaseConfig.apiKey);
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 console.log("Firebase initialized:", app.name);
-export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+// export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+export const analytics = null;
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
