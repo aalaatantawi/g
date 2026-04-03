@@ -78,7 +78,7 @@ const App: React.FC = () => {
       
       const unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data();
-        console.log("Snapshot received:", data);
+        console.log("Snapshot received, full data:", JSON.stringify(data));
         if (data?.error) {
           console.error("Stripe Portal Error:", data.error);
           unsubscribe();
@@ -89,6 +89,8 @@ const App: React.FC = () => {
           unsubscribe();
           setIsManagingSub(false);
           window.location.assign(data.url);
+        } else {
+          console.log("Snapshot received but no error or url field found yet.");
         }
       }, (error) => {
         console.error("Portal session snapshot error:", error);
