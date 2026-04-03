@@ -1,15 +1,19 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
   body {
-    @apply bg-[#F2F2F7] dark:bg-[#121212] text-[#3A3A3C] dark:text-[#E5E5EA] transition-colors;
+    @apply bg-[#F2F2F7] dark:bg-[#121212] text-[#3A3A3C] dark:text-[#E5E5EA] transition-colors font-sans text-base leading-relaxed;
   }
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-[#1C1C1E] dark:text-white;
-  }
+  h1 { @apply text-4xl font-bold tracking-tighter text-[#1C1C1E] dark:text-white; }
+  h2 { @apply text-3xl font-bold tracking-tight text-[#1C1C1E] dark:text-white; }
+  h3 { @apply text-2xl font-semibold tracking-tight text-[#1C1C1E] dark:text-white; }
+  h4 { @apply text-xl font-semibold tracking-tight text-[#1C1C1E] dark:text-white; }
+  p { @apply mb-4; }
 }
 
 @layer components {

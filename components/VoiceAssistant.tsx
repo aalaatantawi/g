@@ -34,7 +34,10 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
   const startSession = async () => {
     setIsConnecting(true);
     try {
-      const key = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+      let key = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+      if (key === "GEMINI_API_KEY") {
+        key = import.meta.env.VITE_GEMINI_API_KEY;
+      }
       if (!key) throw new Error("API Key missing");
 
       const ai = new GoogleGenAI({ apiKey: key });
@@ -46,7 +49,7 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
             console.log("Live session opened");
             setIsConnecting(false);
             setIsActive(true);
-            startMic(session);
+            startMic();
           },
           onmessage: async (message: any) => {
             if (message.serverContent?.modelTurn?.parts) {
@@ -89,10 +92,6 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
                const text = message.serverContent.userTurn.parts[0].text;
                setTranscript("You: " + text);
             }
-            
-            if (message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data) {
-               // This is handled above for audio, but we can also check for other data
-            }
           },
           onclose: () => {
             stopSession();
@@ -113,14 +112,18 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
         },
       });
       sessionRef.current = session;
+      session.sendRealtimeInput({ text: "Hi Doctor, how can I help?" });
     } catch (err) {
       console.error("Failed to start voice assistant:", err);
       setIsConnecting(false);
     }
   };
 
-  const startMic = async (session: any) => {
+  const startMic = async () => {
     try {
+      const session = sessionRef.current;
+      if (!session) throw new Error("Session not initialized");
+      
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       
@@ -237,20 +240,18 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
       <button
         onClick={isActive ? stopSession : startSession}
         disabled={isConnecting}
-        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all ${
+        className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all ${
           isActive 
             ? 'bg-red-500 hover:bg-red-600' 
-            : isDarkMode 
-              ? 'bg-blue-600 hover:bg-blue-700' 
-              : 'bg-black hover:bg-gray-900'
+            : 'bg-black hover:bg-gray-900'
         } text-white`}
       >
         {isConnecting ? (
-          <i className="fas fa-circle-notch fa-spin text-xl"></i>
+          <i className="fas fa-circle-notch fa-spin text-sm"></i>
         ) : isActive ? (
-          <i className="fas fa-stop text-xl"></i>
+          <i className="fas fa-stop text-sm"></i>
         ) : (
-          <i className="fas fa-microphone text-xl"></i>
+          <div className="w-3 h-3 bg-white rounded-full"></div>
         )}
       </button>
     </div>

@@ -84,6 +84,11 @@ function getAIClient() {
   // Always prefer the platform-provided GEMINI_API_KEY
   let key = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
   
+  // If the user accidentally set the value to the literal string "GEMINI_API_KEY", fallback to VITE_GEMINI_API_KEY
+  if (key === "GEMINI_API_KEY") {
+    key = import.meta.env.VITE_GEMINI_API_KEY;
+  }
+  
   if (!key || key === "undefined") {
     throw new Error("API key is missing. Please ensure the environment is correctly configured.");
   }
@@ -97,7 +102,7 @@ function getAIClient() {
   }
 
   if (key === "GEMINI_API_KEY") {
-    throw new Error("INVALID_KEY_VALUE: The system is still receiving the literal text 'GEMINI_API_KEY'. Please create a NEW secret named VITE_GEMINI_API_KEY and select 'AI Studio Free Tier' as its value, then click 'Apply changes'.");
+    throw new Error("INVALID_KEY_VALUE: The system is still receiving the literal text 'GEMINI_API_KEY'. Please create a NEW secret named VITE_GEMINI_API_KEY and paste your AIza... key as its value, then click 'Apply changes'.");
   }
 
   // If it's still failing, let's show the first 10 characters so we know what's being sent

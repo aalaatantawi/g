@@ -415,51 +415,63 @@ const App: React.FC = () => {
                 {userSub?.isPro ? (
                   <span className="text-blue-600 font-semibold"><i className="fas fa-check-circle text-[10px]"></i> Pro Plan</span>
                 ) : (
-                  <span>Free Plan</span>
+                  <span>Starter</span>
                 )}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
             {userSub?.isPro ? (
               <>
                 <button 
                   type="button"
                   onClick={() => setShowClinicSettings(true)}
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-semibold text-[#1C1C1E] transition-colors"
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
-                  <i className="fas fa-id-card mr-2 hidden sm:inline"></i> Branding
+                  <i className="fas fa-id-card text-[10px]"></i> Branding
                 </button>
                 {userSub?.hasActiveStripeSub && (
                   <button 
                     type="button"
                     onClick={handleManageSubscription}
                     disabled={isManagingSub}
-                    className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-semibold text-[#1C1C1E] transition-colors disabled:opacity-50"
+                    className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50"
                   >
-                    <i className="fas fa-cog mr-2 hidden sm:inline"></i> {isManagingSub ? '...' : 'Subscription'}
+                    <i className="fas fa-cog text-[10px]"></i> {isManagingSub ? '...' : 'Subscription'}
                   </button>
                 )}
               </>
             ) : (
-              <button 
-                type="button"
-                onClick={() => setShowPaywall(true)}
-                className="px-4 py-2 bg-[#E6192B] text-white rounded-xl text-xs font-semibold hover:bg-red-700 transition-colors shadow-sm"
-              >
-                <i className="fas fa-crown mr-2"></i> Upgrade
-              </button>
+              <>
+                <button 
+                  type="button"
+                  onClick={() => alert("Unlock Custom Clinic Branding! Upgrade to the Consultant plan to add your own logo, doctor name, and customize report colors.")}
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <i className="fas fa-crown text-[10px]"></i> Branding
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => alert("Upgrade to review past reports and follow up your patients")}
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <i className="fas fa-lock text-[10px]"></i> History
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => setShowPaywall(true)}
+                  className="px-4 py-2 bg-[#E6192B] text-white rounded-xl text-xs font-bold hover:bg-[#C41524] transition-colors shadow-sm flex items-center gap-1.5"
+                >
+                  Upgrade
+                </button>
+              </>
             )}
             <button 
               type="button"
-              onClick={() => setShowHistory(true)}
-              className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-semibold text-[#1C1C1E] transition-colors"
-            >
-              <i className="fas fa-folder-open mr-2 hidden sm:inline"></i> History
-            </button>
-            <button 
-              type="button"
-              onClick={logout}
+              onClick={async () => {
+                confirmReset();
+                await logout();
+              }}
               className="px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-xl text-xs font-semibold text-red-600 transition-colors"
               title="Logout"
             >
@@ -471,7 +483,7 @@ const App: React.FC = () => {
         {/* Hero Section */}
         {!analysis && (
           <div className="text-center mb-10 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-[#1C1C1E] leading-tight">
+             <h2 className="text-xl md:text-2xl font-black tracking-tight text-[#1C1C1E] leading-tight">
                Capture or upload photos and patient information
              </h2>
           </div>
@@ -515,11 +527,15 @@ const App: React.FC = () => {
                 <div className="mt-8 pt-8 border-t border-black/5">
                   <button
                     onClick={() => voiceAssistantRef.current?.startSession()}
-                    className="w-full mb-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-sm shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                    className="w-full md:w-auto mb-6 py-4 px-10 bg-[#1C1C1E] text-white rounded-2xl font-semibold text-lg shadow-lg hover:bg-black transition-all flex items-center justify-center"
                   >
-                    <i className="fas fa-microphone"></i> Start Voice Dictation
+                    Start Voice Dictation
                   </button>
-                  <h3 className="text-sm font-bold text-[#1C1C1E] mb-4 uppercase tracking-wider">Ultrasound Case Assessment</h3>
+                  <VoiceAssistant 
+                    ref={voiceAssistantRef}
+                    onTranscript={(text) => setClinicalContext(prev => prev + " " + text)}
+                  />
+                  <h3 className="text-sm font-bold text-[#1C1C1E] mb-4 capitalize tracking-wider">Ultrasound Case Assessment</h3>
                   <div className="flex gap-4 mb-6">
                     <button
                       type="button"
@@ -658,20 +674,21 @@ const App: React.FC = () => {
           )}
 
           {status.error && (
-            <div className={`apple-card p-6 border text-sm font-medium mt-8 ${analysis ? 'lg:col-span-12' : 'lg:col-span-1'} ${status.error.includes('INVALID_KEY_FORMAT') ? 'bg-red-600 border-red-700 text-white shadow-2xl scale-105 transform transition-all' : 'bg-red-50 border-red-100 text-red-600'}`}>
+            <div className={`apple-card p-6 border text-sm font-medium mt-8 ${analysis ? 'lg:col-span-12' : 'lg:col-span-1'} ${(status.error.includes('INVALID_KEY_FORMAT') || status.error.includes('INVALID_KEY_VALUE')) ? 'bg-red-600 border-red-700 text-white shadow-2xl scale-105 transform transition-all' : 'bg-red-50 border-red-100 text-red-600'}`}>
               <div className="flex items-start gap-3">
-                <i className={`fas fa-exclamation-triangle mt-1 ${status.error.includes('INVALID_KEY_FORMAT') ? 'text-white text-2xl' : ''}`}></i>
+                <i className={`fas fa-exclamation-triangle mt-1 ${(status.error.includes('INVALID_KEY_FORMAT') || status.error.includes('INVALID_KEY_VALUE')) ? 'text-white text-2xl' : ''}`}></i>
                 <div>
-                  {status.error.includes('INVALID_KEY_FORMAT') ? (
+                  {(status.error.includes('INVALID_KEY_FORMAT') || status.error.includes('INVALID_KEY_VALUE')) ? (
                     <div className="space-y-2">
                       <h3 className="text-xl font-black uppercase tracking-wider mb-2">🚨 CRITICAL ERROR: WRONG API KEY 🚨</h3>
-                      <p className="text-base font-bold">You have pasted a Firebase key instead of a Gemini API key in the Settings.</p>
+                      <p className="text-base font-bold">You have pasted a Firebase key or the literal text 'GEMINI_API_KEY' instead of a valid Gemini API key in the Settings.</p>
                       <ol className="list-decimal ml-5 space-y-2 mt-4 font-semibold">
                         <li>Look at the top right corner of this screen.</li>
                         <li>Click on the <strong>Gear Icon (Settings)</strong> or <strong>Secrets</strong>.</li>
-                        <li>Find the variable named <strong>GEMINI_API_KEY</strong>.</li>
+                        <li>Find the variable named <strong>VITE_GEMINI_API_KEY</strong>.</li>
                         <li>Click the <strong>Trash Can (Delete)</strong> icon next to it.</li>
-                        <li>Close the settings and try again. <strong>DO NOT add a new key.</strong></li>
+                        <li>Click <strong>Add Secret</strong>, name it <strong>VITE_GEMINI_API_KEY</strong>, and select <strong>AI Studio Free Tier</strong> or paste your <strong>AIza...</strong> key.</li>
+                        <li>Click <strong>Apply changes</strong>.</li>
                       </ol>
                     </div>
                   ) : (
@@ -845,7 +862,7 @@ const App: React.FC = () => {
 
       <footer className="py-12 border-t border-black/5 text-center">
         <p className="text-[11px] text-[#86868b] font-medium tracking-tight">
-          © 2024 OGXAI Systems. All rights reserved.
+          © 2026 OBGYNX LLC USA all rights reserved.
         </p>
       </footer>
     </div>

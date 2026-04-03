@@ -49,16 +49,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ isDarkMode }) => {
           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" className="w-5 h-5" />
           <span className="font-medium">Continue with Google</span>
         </button>
-
-        {/* Email Link */}
-        <div className="text-center mb-10">
-          <a href="#" className="text-gray-500 underline text-sm">Or sign in with email</a>
-        </div>
-
-        {/* Sign Up Footer */}
-        <div className="text-center text-gray-500 text-sm">
-          Don't have an account? <a href="#" className="text-black dark:text-white font-bold underline">Sign Up</a>
-        </div>
       </div>
     </div>
   );
