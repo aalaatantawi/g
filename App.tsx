@@ -415,11 +415,8 @@ const App: React.FC = () => {
         {/* Auth & History Bar */}
         <div className="flex flex-wrap justify-between items-center mb-12 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-black/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600">
-              <i className="fas fa-user-md"></i>
-            </div>
             <div>
-              <p className="text-sm font-bold text-[#1C1C1E] flex items-center gap-2">
+              <p className="text-xl font-black text-[#1C1C1E] flex items-center gap-2">
                 Dr. {user.displayName || user.email?.split('@')[0]}
                 {userSub?.tier === 'consultant' && (
                   <span className="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
