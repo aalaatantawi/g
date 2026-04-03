@@ -489,10 +489,10 @@ const App: React.FC = () => {
                               handleManageSubscription();
                             }}
                             disabled={isManagingSub}
-                            className="w-full text-left px-4 py-2 text-[10px] text-gray-400 hover:text-gray-600 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50 mt-1 transition-colors"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50 mt-1 transition-colors"
                           >
                             <i className="fas fa-file-invoice-dollar"></i> 
-                            {isManagingSub ? 'Redirecting...' : 'Billing & Subscription'}
+                            {isManagingSub ? 'Redirecting...' : 'Manage Subscription'}
                           </button>
                         )}
                       </div>
