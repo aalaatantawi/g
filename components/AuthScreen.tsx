@@ -22,7 +22,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ isDarkMode }) => {
           <h1 className="text-3xl font-bold tracking-tighter text-black dark:text-white">
             OBGYN<span className="text-red-600">X</span>
           </h1>
-          <p className="text-sm text-gray-400 tracking-widest uppercase">AI SYSTEMS</p>
         </div>
 
         {/* Headline (was Description) */}
