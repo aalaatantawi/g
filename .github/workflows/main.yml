@@ -3,32 +3,32 @@ name: OBGYNX Production Deploy
 on:
   push:
     branches:
-      - main  # اتأكدي إن اسم الفرع عندك main مش master
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. تحميل الكود من جيتهاب للمحرك بتاعنا
+      # 1. سحب الكود من جيتهاب
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. تجهيز Node.js (المحرك اللي هيعمل الـ Build)
+      # 2. تجهيز المحرك (Node.js 20) - ده اللي هيحل مشكلة الـ CustomEvent
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       # 3. تسطيب المكتبات وعمل النسخة الجاهزة (Build)
       - name: Install and Build
         run: |
-          npm install
+          npm install --force
           npm run build
         env:
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
 
-      # 4. خطوة الـ Deploy (بعت الملفات لهوستنجر)
+      # 4. نقل الملفات النهائية لهوستنجر (Deploy)
       - name: Copy Files to Hostinger
         uses: appleboy/scp-action@master
         with:
@@ -36,6 +36,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          source: "dist/*"  # هنا بنقوله ابعت اللي جوه فولدر dist بس
+          source: "dist/*"
           target: "domains/ai.obgynx.com/public_html"
-          strip_components: 1 # دي أهم حتة عشان يرمي الملفات جوه public_html مباشرة
+          strip_components: 1
