@@ -42,14 +42,14 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
 
       const ai = new GoogleGenAI({ apiKey: key });
       
-      const session = await ai.live.connect({
+      const sessionPromise = ai.live.connect({
         model: "gemini-3.1-flash-live-preview",
         callbacks: {
           onopen: () => {
             console.log("Live session opened");
             setIsConnecting(false);
             setIsActive(true);
-            startMic();
+            startMic(sessionPromise);
           },
           onmessage: async (message: any) => {
             if (message.serverContent?.modelTurn?.parts) {
@@ -111,6 +111,7 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
           systemInstruction: "You are OGX Voice, a highly intelligent and professional medical assistant for an expert OBGYN consultant. Your task is to listen to the doctor dictate ultrasound findings, measurements, and patient history in real-time. You must accurately understand advanced terms (like IOTA, IETA, MUSA, FIGO protocols). Speak with a fast, natural, and highly professional human voice. Do not be overly chatty. Acknowledge findings briefly and concisely (e.g., 'Got it, 15mm endometrium'). When the doctor says 'Finish report', you must stop listening and automatically populate the exact data into the report template fields.",
         },
       });
+      const session = await sessionPromise;
       sessionRef.current = session;
       session.sendRealtimeInput({ text: "Hi Doctor, how can I help?" });
     } catch (err) {
@@ -119,11 +120,9 @@ const VoiceAssistant = forwardRef<VoiceAssistantHandle, VoiceAssistantProps>(({ 
     }
   };
 
-  const startMic = async () => {
+  const startMic = async (sessionPromise: Promise<any>) => {
     try {
-      const session = sessionRef.current;
-      if (!session) throw new Error("Session not initialized");
-      
+      const session = await sessionPromise;
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       

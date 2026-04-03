@@ -3,7 +3,8 @@ import { createServer as createViteServer } from "vite";
 import Stripe from "stripe";
 import cors from "cors";
 import dotenv from "dotenv";
-import * as admin from "firebase-admin";
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 import path from "path";
 import cron from 'node-cron';
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, HeadingLevel, BorderStyle } from "docx";
@@ -20,19 +21,19 @@ function getFirebaseAdmin() {
     try {
       if (process.env.FIREBASE_SERVICE_ACCOUNT) {
         const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount)
+        initializeApp({
+          credential: cert(serviceAccount)
         });
       } else {
         // Fallback to default credentials if available in the environment
-        admin.initializeApp();
+        initializeApp();
       }
       firebaseAdminInitialized = true;
     } catch (e) {
       console.error("Firebase Admin initialization failed:", e);
     }
   }
-  return admin;
+  return { firestore: getFirestore };
 }
 
 let stripeClient: Stripe | null = null;
