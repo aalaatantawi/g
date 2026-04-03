@@ -80,8 +80,8 @@ const App: React.FC = () => {
           clearTimeout(timeoutId);
           unsubscribe();
           setIsManagingSub(false);
-          const errorMessage = typeof data.error === 'string' ? data.error : (data.error?.message || 'Unknown error from Stripe Extension');
-          alert(`Stripe Portal Error: ${errorMessage}\n\nMake sure your Stripe Extension is configured to generate portal links and you have an active Stripe Customer ID.`);
+          // Fallback to the direct portal link if the extension fails
+          window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
         } else if (data?.url) {
           clearTimeout(timeoutId);
           unsubscribe();
@@ -92,18 +92,21 @@ const App: React.FC = () => {
         unsubscribe();
         clearTimeout(timeoutId);
         setIsManagingSub(false);
-        alert("An error occurred while loading the portal. Please try again.");
+        // Fallback to the direct portal link on snapshot error
+        window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
       });
 
       timeoutId = setTimeout(() => {
         unsubscribe();
         setIsManagingSub(false);
-        alert("Timeout: Could not load subscription portal. Please ensure the Firebase Stripe Extension is configured to handle portal_sessions.");
-      }, 35000);
+        // Fallback to the direct portal link on timeout
+        window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
+      }, 10000); // Reduced timeout since we have a reliable fallback
     } catch (error: any) {
       handleFirestoreError(error, OperationType.WRITE, `customers/${user.uid}/portal_sessions`);
       setIsManagingSub(false);
-      alert("An error occurred. Please try again.");
+      // Fallback to the direct portal link on catch error
+      window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
     }
   };
 
