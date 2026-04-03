@@ -423,6 +423,13 @@ const App: React.FC = () => {
             <div className="flex items-center gap-2">
             {userSub?.isPro ? (
               <>
+                <button 
+                  type="button"
+                  onClick={() => setShowClinicSettings(true)}
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <i className="fas fa-crown text-[10px] text-[#D4AF37]"></i> Branding
+                </button>
                 {userSub?.hasActiveStripeSub && (
                   <button 
                     type="button"
@@ -436,6 +443,20 @@ const App: React.FC = () => {
               </>
             ) : (
               <>
+                <button 
+                  type="button"
+                  onClick={() => alert("Unlock Custom Clinic Branding! Upgrade to the Consultant plan to add your own logo, doctor name, and customize report colors.")}
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <i className="fas fa-crown text-[10px] text-[#D4AF37]"></i> Branding
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => alert("Upgrade to review past reports and follow up your patients")}
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <i className="fas fa-lock text-[10px]"></i> History
+                </button>
                 <button 
                   type="button"
                   onClick={() => setShowPaywall(true)}
