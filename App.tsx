@@ -67,19 +67,25 @@ const App: React.FC = () => {
   const handleManageSubscription = async () => {
     if (!user) return;
     setIsManagingSub(true);
+    console.log("Starting Manage Subscription process for user:", user.uid);
     try {
       const portalSessionsRef = collection(db, 'customers', user.uid, 'portal_sessions');
+      console.log("Creating document in:", `customers/${user.uid}/portal_sessions`);
       const docRef = await addDoc(portalSessionsRef, {
         return_url: window.location.origin
       });
+      console.log("Document created with ID:", docRef.id);
       
       const unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data();
+        console.log("Snapshot received:", data);
         if (data?.error) {
+          console.error("Stripe Portal Error:", data.error);
           unsubscribe();
           setIsManagingSub(false);
           alert(`Stripe Portal Error: ${typeof data.error === 'string' ? data.error : (data.error?.message || 'Unknown error')}`);
         } else if (data?.url) {
+          console.log("URL received, redirecting to:", data.url);
           unsubscribe();
           setIsManagingSub(false);
           window.location.assign(data.url);
@@ -91,6 +97,7 @@ const App: React.FC = () => {
         alert("An error occurred while loading the portal. Please try again.");
       });
     } catch (error: any) {
+      console.error("Error in handleManageSubscription:", error);
       handleFirestoreError(error, OperationType.WRITE, `customers/${user.uid}/portal_sessions`);
       setIsManagingSub(false);
       alert("An error occurred. Please try again.");
