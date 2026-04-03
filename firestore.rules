@@ -211,6 +211,7 @@ service cloud.firestore {
 
     match /customers/{uid} {
       allow read: if isAuthenticated() && request.auth.uid == uid;
+      allow delete: if isAuthenticated() && request.auth.uid == uid;
       
       match /checkout_sessions/{id} {
         allow read, write: if isAuthenticated() && request.auth.uid == uid;

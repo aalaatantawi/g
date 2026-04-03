@@ -1,5 +1,8 @@
 export const DEPLOYED_URL = typeof window !== 'undefined' ? window.location.origin : "https://ogxai.obgynx.com";
 
+// Frontend Stripe Initialization Key (if needed for custom elements, though Firebase Extension handles redirect)
+export const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '';
+
 export const PRICES = {
   specialist: {
     monthly: "price_1TI8kyC7VXAuMmMhH6bswv8K",

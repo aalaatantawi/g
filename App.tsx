@@ -11,7 +11,7 @@ import VoiceAssistant, { VoiceAssistantHandle } from './components/VoiceAssistan
 import { auth, logout, db } from './firebase.ts';
 import { onAuthStateChanged } from 'firebase/auth';
 import { savePatient, saveScan, updateScan, subscribeToPatients, subscribeToScans, Patient, Scan, getUserSubscription, subscribeToUserSubscription, incrementReportCount, handleFirestoreError, OperationType } from './services/firebaseService.ts';
-import { collection, addDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import AuthScreen from './components/AuthScreen.tsx';
 import { PatientHistory } from './components/PatientHistory.tsx';
 import ClinicSettings from './components/ClinicSettings.tsx';
@@ -113,9 +113,8 @@ const App: React.FC = () => {
       console.log("Checkout sessions ref path:", checkoutSessionsRef.path);
       const docRef = await addDoc(checkoutSessionsRef, {
         price: priceId,
-        mode: 'subscription',
-        success_url: successUrl(),
-        cancel_url: cancelUrl(),
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
       });
       console.log("Checkout session created:", docRef.id);
 
