@@ -22,12 +22,6 @@ const Header: React.FC = () => {
               <span className="text-[#E6192B] dark:text-[#FF4444]">X</span>
             </span>
           </a>
-          <div className="h-6 w-px bg-black/10 dark:bg-white/10 hidden sm:block"></div>
-          <div className="flex flex-col">
-            <h1 className="text-lg font-black tracking-tight leading-none text-[#E6192B] dark:text-[#FF4444]">
-              AI <span className="font-normal text-[#1C1C1E] dark:text-white opacity-60 ml-1 hidden sm:inline">| OBGYN Ultrasound reporting system</span>
-            </h1>
-          </div>
         </div>
       </div>
     </header>
