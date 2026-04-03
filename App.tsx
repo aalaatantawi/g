@@ -70,43 +70,30 @@ const App: React.FC = () => {
     try {
       const portalSessionsRef = collection(db, 'customers', user.uid, 'portal_sessions');
       const docRef = await addDoc(portalSessionsRef, {
-        return_url: 'https://obgynx.com'
+        return_url: window.location.origin
       });
       
-      let timeoutId: NodeJS.Timeout;
       const unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data();
         if (data?.error) {
-          clearTimeout(timeoutId);
           unsubscribe();
           setIsManagingSub(false);
-          // Fallback to the direct portal link if the extension fails
-          window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
+          alert(`Stripe Portal Error: ${typeof data.error === 'string' ? data.error : (data.error?.message || 'Unknown error')}`);
         } else if (data?.url) {
-          clearTimeout(timeoutId);
           unsubscribe();
-          window.location.href = data.url;
+          setIsManagingSub(false);
+          window.location.assign(data.url);
         }
       }, (error) => {
         console.error("Portal session snapshot error:", error);
         unsubscribe();
-        clearTimeout(timeoutId);
         setIsManagingSub(false);
-        // Fallback to the direct portal link on snapshot error
-        window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
+        alert("An error occurred while loading the portal. Please try again.");
       });
-
-      timeoutId = setTimeout(() => {
-        unsubscribe();
-        setIsManagingSub(false);
-        // Fallback to the direct portal link on timeout
-        window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
-      }, 10000); // Reduced timeout since we have a reliable fallback
     } catch (error: any) {
       handleFirestoreError(error, OperationType.WRITE, `customers/${user.uid}/portal_sessions`);
       setIsManagingSub(false);
-      // Fallback to the direct portal link on catch error
-      window.location.href = 'https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00';
+      alert("An error occurred. Please try again.");
     }
   };
 
