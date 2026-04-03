@@ -746,7 +746,7 @@ const App: React.FC = () => {
             </motion.div>
           )}
           
-          {!userSub?.isPro && !status.isAnalyzing && !analysis && (
+          {!userSub?.isPro && (
             <div className={`mt-10 pb-8 ${analysis ? 'lg:col-span-12' : 'lg:col-span-1'}`}>
               <SubscriptionTiers onCheckout={handleCheckout} isCheckingOut={isCheckingOut} currentTier={userSub?.tier} />
             </div>
