@@ -126,7 +126,7 @@ export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout
           
           <div className="mb-8">
             <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-[#1C1C1E]">${isYearly ? '290' : '29'}</span>
+              <span className="text-3xl font-bold text-[#1C1C1E]">${isYearly ? '150' : '15'}</span>
               <span className="text-gray-500 text-sm font-medium">USD/{isYearly ? 'year' : 'month'}</span>
             </div>
           </div>
@@ -179,7 +179,7 @@ export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout
           
           <div className="mb-8">
             <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold text-[#1C1C1E]">${isYearly ? '490' : '49'}</span>
+              <span className="text-3xl font-bold text-[#1C1C1E]">${isYearly ? '300' : '30'}</span>
               <span className="text-gray-500 text-sm font-medium">USD/{isYearly ? 'year' : 'month'}</span>
             </div>
           </div>
