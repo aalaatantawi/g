@@ -409,21 +409,34 @@ const App: React.FC = () => {
               <i className="fas fa-user-md"></i>
             </div>
             <div>
-              <p className="text-sm font-bold text-[#1C1C1E]">Dr. {user.displayName || user.email?.split('@')[0]}</p>
-              <p className="text-xs text-gray-500 flex items-center gap-1 capitalize">
-                {userSub?.tier === 'consultant' ? (
-                  <span className="text-purple-600 font-semibold"><i className="fas fa-crown text-[10px]"></i> Consultant</span>
-                ) : userSub?.tier === 'specialist' ? (
-                  <span className="text-blue-600 font-semibold"><i className="fas fa-check-circle text-[10px]"></i> Specialist</span>
-                ) : (
-                  <span>Starter</span>
+              <p className="text-sm font-bold text-[#1C1C1E] flex items-center gap-2">
+                Dr. {user.displayName || user.email?.split('@')[0]}
+                {userSub?.tier === 'consultant' && (
+                  <span className="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                    <i className="fas fa-crown"></i> Consultant
+                  </span>
                 )}
+                {userSub?.tier === 'specialist' && (
+                  <span className="bg-teal-600/10 text-teal-600 border border-teal-600/30 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                    <i className="fas fa-check-circle"></i> Specialist
+                  </span>
+                )}
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {userSub?.tier === 'starter' ? 'Starter Plan' : 'Pro Plan Active'}
               </p>
             </div>
           </div>
             <div className="flex items-center gap-2">
             {userSub?.isPro ? (
               <>
+                <button 
+                  type="button"
+                  onClick={() => setShowHistory(true)}
+                  className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <i className="fas fa-history text-[10px]"></i> History
+                </button>
                 <button 
                   type="button"
                   onClick={() => {
@@ -436,7 +449,12 @@ const App: React.FC = () => {
                   }}
                   className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
-                  <i className={`fas fa-crown text-[10px] ${userSub?.tier === 'consultant' ? 'text-[#D4AF37]' : 'text-gray-400'}`}></i> Branding
+                  {userSub?.tier === 'consultant' ? (
+                    <i className="fas fa-palette text-[10px] text-[#D4AF37]"></i>
+                  ) : (
+                    <i className="fas fa-lock text-[10px] text-gray-400"></i>
+                  )}
+                  Branding
                 </button>
                 {userSub?.hasActiveStripeSub && (
                   <button 
@@ -459,7 +477,7 @@ const App: React.FC = () => {
                   }}
                   className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
-                  <i className="fas fa-crown text-[10px] text-gray-400"></i> Branding
+                  <i className="fas fa-lock text-[10px] text-gray-400"></i> Branding
                 </button>
                 <button 
                   type="button"
@@ -469,7 +487,7 @@ const App: React.FC = () => {
                   }}
                   className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
-                  <i className="fas fa-lock text-[10px]"></i> History
+                  <i className="fas fa-lock text-[10px] text-gray-400"></i> History
                 </button>
                 <button 
                   type="button"
