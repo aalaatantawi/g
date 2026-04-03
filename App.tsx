@@ -70,17 +70,21 @@ const App: React.FC = () => {
     try {
       const portalSessionsRef = collection(db, 'customers', user.uid, 'portal_sessions');
       const docRef = await addDoc(portalSessionsRef, {
-        return_url: window.location.origin + '/settings'
+        return_url: window.location.origin
       });
       
       let timeoutId: NodeJS.Timeout;
       const unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data();
-        if (data?.url) {
+        if (data?.error) {
           clearTimeout(timeoutId);
           unsubscribe();
-          window.open(data.url, '_blank');
           setIsManagingSub(false);
+          alert(`Stripe Portal Error: ${data.error.message || 'Could not load portal.'}`);
+        } else if (data?.url) {
+          clearTimeout(timeoutId);
+          unsubscribe();
+          window.location.href = data.url;
         }
       }, (error) => {
         console.error("Portal session snapshot error:", error);
