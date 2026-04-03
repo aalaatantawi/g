@@ -1,0 +1,17 @@
+// src/stripeConfig.ts
+
+export const DEPLOYED_URL = "https://ai.obgynx.com";
+
+export const PRICES = {
+  specialist: {
+    monthly: "price_1TI8kyC7VXAuMmMhH6bswv8K",
+    yearly: "price_1TI8nvC7VXAuMmMh4FflOV3j",
+  },
+  consultant: {
+    monthly: "price_1TI8oiC7VXAuMmMhwtJbojkY",
+    yearly: "price_1TI8p5C7VXAuMmMhrqYDWuwu",
+  }
+};
+
+export const successUrl = `${DEPLOYED_URL}/success`;
+export const cancelUrl = `${DEPLOYED_URL}/failure`;
