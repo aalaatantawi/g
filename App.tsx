@@ -78,7 +78,8 @@ const App: React.FC = () => {
       
       const unsubscribe = onSnapshot(docRef, (snap) => {
         const data = snap.data();
-        console.log("Snapshot received, full data:", JSON.stringify(data));
+        console.log("Snapshot received, full data object:", data);
+        
         if (data?.error) {
           console.error("Stripe Portal Error:", data.error);
           unsubscribe();
@@ -89,8 +90,6 @@ const App: React.FC = () => {
           unsubscribe();
           setIsManagingSub(false);
           window.location.assign(data.url);
-        } else {
-          console.log("Snapshot received but no error or url field found yet.");
         }
       }, (error) => {
         console.error("Portal session snapshot error:", error);
@@ -98,6 +97,16 @@ const App: React.FC = () => {
         setIsManagingSub(false);
         alert("An error occurred while loading the portal. Please try again.");
       });
+
+      // Fallback: If no URL is received within 15 seconds, redirect to the direct portal link
+      setTimeout(() => {
+        unsubscribe();
+        if (isManagingSub) {
+          console.warn("Timeout waiting for Stripe Portal URL, redirecting to fallback.");
+          setIsManagingSub(false);
+          window.location.assign('https://billing.stripe.com/p/login/test_5kQ9AS9o3fSX0Vd4392Ji00');
+        }
+      }, 15000);
     } catch (error: any) {
       console.error("Error in handleManageSubscription:", error);
       handleFirestoreError(error, OperationType.WRITE, `customers/${user.uid}/portal_sessions`);
@@ -121,6 +130,7 @@ const App: React.FC = () => {
         price: priceId,
         success_url: window.location.origin,
         cancel_url: window.location.origin,
+        billing_address_collection: false,
       });
       console.log("Checkout session created:", docRef.id);
 
