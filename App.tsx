@@ -70,7 +70,7 @@ const App: React.FC = () => {
     try {
       const portalSessionsRef = collection(db, 'customers', user.uid, 'portal_sessions');
       const docRef = await addDoc(portalSessionsRef, {
-        return_url: 'https://obgynx.com/#/dashboard'
+        return_url: 'https://obgynx.com'
       });
       
       let timeoutId: NodeJS.Timeout;
@@ -80,7 +80,8 @@ const App: React.FC = () => {
           clearTimeout(timeoutId);
           unsubscribe();
           setIsManagingSub(false);
-          alert(`Stripe Portal Error: ${data.error.message || 'Could not load portal.'}`);
+          const errorMessage = typeof data.error === 'string' ? data.error : (data.error?.message || 'Unknown error from Stripe Extension');
+          alert(`Stripe Portal Error: ${errorMessage}\n\nMake sure your Stripe Extension is configured to generate portal links and you have an active Stripe Customer ID.`);
         } else if (data?.url) {
           clearTimeout(timeoutId);
           unsubscribe();
@@ -97,8 +98,8 @@ const App: React.FC = () => {
       timeoutId = setTimeout(() => {
         unsubscribe();
         setIsManagingSub(false);
-        alert("Could not load subscription portal. Please try again.");
-      }, 20000);
+        alert("Timeout: Could not load subscription portal. Please ensure the Firebase Stripe Extension is configured to handle portal_sessions.");
+      }, 35000);
     } catch (error: any) {
       handleFirestoreError(error, OperationType.WRITE, `customers/${user.uid}/portal_sessions`);
       setIsManagingSub(false);
