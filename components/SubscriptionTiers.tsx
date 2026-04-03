@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { PRICES } from '../stripeConfig'; import React, { useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
