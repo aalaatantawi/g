@@ -70,7 +70,7 @@ const App: React.FC = () => {
     try {
       const portalSessionsRef = collection(db, 'customers', user.uid, 'portal_sessions');
       const docRef = await addDoc(portalSessionsRef, {
-        return_url: window.location.origin
+        return_url: 'https://obgynx.com/#/dashboard'
       });
       
       let timeoutId: NodeJS.Timeout;
