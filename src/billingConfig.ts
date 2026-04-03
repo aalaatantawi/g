@@ -1,13 +1,13 @@
 export const DEPLOYED_URL = typeof window !== 'undefined' ? window.location.origin : "https://ogxai.obgynx.com";
 
 export const PRICES = {
-  consultant: {
-    monthly: "price_1THR7HCQxnfnqCKeAsfFQZYN",
-    yearly: "price_1THR7dCQxnfnqCKeZRti9FOQ",
+  specialist: {
+    monthly: "price_1TI8kyC7VXAuMmMhH6bswv8K",
+    yearly: "price_1TI8nvC7VXAuMmMh4FflOV3j",
   },
-  enterprise: {
-    monthly: "price_1THR60CQxnfnqCKeX79cLO3P",
-    yearly: "price_1THR6sCQxnfnqCKeBAjwNLjF",
+  consultant: {
+    monthly: "price_1TI8oiC7VXAuMmMhwtJbojkY",
+    yearly: "price_1TI8p5C7VXAuMmMhrqYDWuwu",
   }
 };
 

@@ -298,11 +298,14 @@ export function subscribeToScans(patientId: string, callback: (scans: Scan[]) =>
   });
 }
 
+import { PRICES } from '../src/billingConfig';
+
 export interface UserSubscription {
   reportsCount: number;
   isPro: boolean;
   clinicProfile?: ClinicProfile;
   hasActiveStripeSub?: boolean;
+  tier: 'specialist' | 'consultant' | 'starter';
 }
 
 export interface ClinicProfile {
@@ -398,22 +401,33 @@ export async function getUserSubscription(): Promise<UserSubscription> {
 
   let isPro = userDocIsPro || user.email === 'aalaatantawi@gmail.com';
   let hasActiveStripeSub = false;
+  let tier: 'specialist' | 'consultant' | 'starter' = 'starter';
+
   const subsPath = `customers/${user.uid}/subscriptions`;
   try {
     const subsQuery = query(collection(db, subsPath));
     const subsSnap = await getDocs(subsQuery);
     subsSnap.forEach((doc) => {
-      const status = doc.data().status;
+      const data = doc.data();
+      const status = data.status;
       if (status === 'active' || status === 'trialing') {
         isPro = true;
         hasActiveStripeSub = true;
+        
+        // Determine tier from price ID
+        const priceId = data.price?.id || (data.items && data.items[0]?.price?.id);
+        if (priceId === PRICES.consultant.monthly || priceId === PRICES.consultant.yearly) {
+          tier = 'consultant';
+        } else if (priceId === PRICES.specialist.monthly || priceId === PRICES.specialist.yearly) {
+          tier = 'specialist';
+        }
       }
     });
   } catch (error: any) {
     console.warn("Could not read subscriptions, defaulting to Free:", error.message);
   }
 
-  return { reportsCount, isPro, clinicProfile, hasActiveStripeSub };
+  return { reportsCount, isPro, clinicProfile, hasActiveStripeSub, tier };
 }
 
 export function subscribeToUserSubscription(callback: (sub: UserSubscription) => void): () => void {
@@ -431,13 +445,15 @@ export function subscribeToUserSubscription(callback: (sub: UserSubscription) =>
   let currentClinicProfile: ClinicProfile | undefined;
   let userDocIsPro = false;
   let hasActiveSub = false;
+  let currentTier: 'specialist' | 'consultant' | 'starter' = 'starter';
 
   const emit = () => {
     callback({ 
       reportsCount: currentReportsCount, 
       isPro: currentIsPro || userDocIsPro || hasActiveSub, 
       clinicProfile: currentClinicProfile,
-      hasActiveStripeSub: hasActiveSub
+      hasActiveStripeSub: hasActiveSub,
+      tier: currentTier
     });
   };
 
@@ -458,16 +474,27 @@ export function subscribeToUserSubscription(callback: (sub: UserSubscription) =>
 
   const unsubSubs = onSnapshot(subsQuery, (snapshot) => {
     hasActiveSub = false;
+    currentTier = 'starter';
     snapshot.forEach((doc) => {
-      const status = doc.data().status;
+      const data = doc.data();
+      const status = data.status;
       if (status === 'active' || status === 'trialing') {
         hasActiveSub = true;
+        
+        // Determine tier from price ID
+        const priceId = data.price?.id || (data.items && data.items[0]?.price?.id);
+        if (priceId === PRICES.consultant.monthly || priceId === PRICES.consultant.yearly) {
+          currentTier = 'consultant';
+        } else if (priceId === PRICES.specialist.monthly || priceId === PRICES.specialist.yearly) {
+          currentTier = 'specialist';
+        }
       }
     });
     emit();
   }, (error: any) => {
     console.warn("Could not subscribe to subscriptions, defaulting to Free:", error.message);
     hasActiveSub = false;
+    currentTier = 'starter';
     emit();
   });
 

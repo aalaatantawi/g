@@ -3,11 +3,12 @@ import { CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface SubscriptionTiersProps {
-  onCheckout: (tier: 'consultant' | 'enterprise', plan: 'monthly' | 'yearly') => void;
+  onCheckout: (tier: 'specialist' | 'consultant', plan: 'monthly' | 'yearly') => void;
   isCheckingOut: string | null;
+  currentTier?: 'specialist' | 'consultant' | 'starter';
 }
 
-export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout, isCheckingOut }) => {
+export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout, isCheckingOut, currentTier = 'starter' }) => {
   const [isYearly, setIsYearly] = useState(false);
 
   return (
@@ -85,9 +86,9 @@ export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout
 
           <button 
             disabled
-            className="w-full py-3.5 rounded-2xl font-bold border-2 border-gray-200 text-gray-400 mb-8 cursor-not-allowed"
+            className={`w-full py-3.5 rounded-2xl font-bold border-2 mb-8 cursor-not-allowed ${currentTier === 'starter' ? 'border-[#1C1C1E] text-[#1C1C1E]' : 'border-gray-200 text-gray-400'}`}
           >
-            Current Plan
+            {currentTier === 'starter' ? 'Current Plan' : 'Free Forever'}
           </button>
 
           <div className="space-y-4 mt-auto">
@@ -131,12 +132,12 @@ export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout
           </div>
 
           <button 
-            onClick={() => onCheckout('consultant', isYearly ? 'yearly' : 'monthly')}
-            disabled={isCheckingOut !== null}
-            className="w-full py-3.5 bg-[#1C1C1E] text-white rounded-2xl font-bold text-sm hover:bg-gray-800 transition-all mb-8 shadow-md flex justify-center items-center gap-2"
+            onClick={() => onCheckout('specialist', isYearly ? 'yearly' : 'monthly')}
+            disabled={isCheckingOut !== null || currentTier === 'specialist'}
+            className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all mb-8 shadow-md flex justify-center items-center gap-2 ${currentTier === 'specialist' ? 'bg-gray-100 text-gray-500 border-2 border-gray-200 cursor-not-allowed' : 'bg-[#1C1C1E] text-white hover:bg-gray-800'}`}
           >
-            {isCheckingOut === `consultant-${isYearly ? 'yearly' : 'monthly'}` ? <i className="fas fa-circle-notch fa-spin"></i> : null}
-            Upgrade to Specialist
+            {isCheckingOut === `specialist-${isYearly ? 'yearly' : 'monthly'}` ? <i className="fas fa-circle-notch fa-spin"></i> : null}
+            {currentTier === 'specialist' ? 'Current Plan' : 'Upgrade to Specialist'}
           </button>
 
           <div className="space-y-4 mt-auto">
@@ -184,12 +185,12 @@ export const SubscriptionTiers: React.FC<SubscriptionTiersProps> = ({ onCheckout
           </div>
 
           <button 
-            onClick={() => onCheckout('enterprise', isYearly ? 'yearly' : 'monthly')}
-            disabled={isCheckingOut !== null}
-            className="w-full py-3.5 bg-[#D4AF37] text-white rounded-2xl font-bold text-sm hover:bg-[#b8962f] transition-all mb-8 flex justify-center items-center gap-2"
+            onClick={() => onCheckout('consultant', isYearly ? 'yearly' : 'monthly')}
+            disabled={isCheckingOut !== null || currentTier === 'consultant'}
+            className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all mb-8 flex justify-center items-center gap-2 ${currentTier === 'consultant' ? 'bg-gray-100 text-gray-500 border-2 border-gray-200 cursor-not-allowed' : 'bg-[#D4AF37] text-white hover:bg-[#b8962f]'}`}
           >
-            {isCheckingOut === `enterprise-${isYearly ? 'yearly' : 'monthly'}` ? <i className="fas fa-circle-notch fa-spin"></i> : null}
-            Upgrade to Consultant
+            {isCheckingOut === `consultant-${isYearly ? 'yearly' : 'monthly'}` ? <i className="fas fa-circle-notch fa-spin"></i> : null}
+            {currentTier === 'consultant' ? 'Current Plan' : 'Upgrade to Consultant'}
           </button>
 
           <div className="space-y-4 mt-auto">

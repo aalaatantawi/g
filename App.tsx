@@ -100,7 +100,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleCheckout = async (tier: 'consultant' | 'enterprise', plan: 'monthly' | 'yearly' = 'monthly') => {
+  const handleCheckout = async (tier: 'specialist' | 'consultant', plan: 'monthly' | 'yearly' = 'monthly') => {
     if (!user) {
       alert("User not logged in");
       return;
@@ -411,9 +411,11 @@ const App: React.FC = () => {
             </div>
             <div>
               <p className="text-sm font-bold text-[#1C1C1E]">Dr. {user.displayName || user.email?.split('@')[0]}</p>
-              <p className="text-xs text-gray-500 flex items-center gap-1">
-                {userSub?.isPro ? (
-                  <span className="text-blue-600 font-semibold"><i className="fas fa-check-circle text-[10px]"></i> Pro Plan</span>
+              <p className="text-xs text-gray-500 flex items-center gap-1 capitalize">
+                {userSub?.tier === 'consultant' ? (
+                  <span className="text-purple-600 font-semibold"><i className="fas fa-crown text-[10px]"></i> Consultant</span>
+                ) : userSub?.tier === 'specialist' ? (
+                  <span className="text-blue-600 font-semibold"><i className="fas fa-check-circle text-[10px]"></i> Specialist</span>
                 ) : (
                   <span>Starter</span>
                 )}
@@ -425,10 +427,17 @@ const App: React.FC = () => {
               <>
                 <button 
                   type="button"
-                  onClick={() => setShowClinicSettings(true)}
+                  onClick={() => {
+                    if (userSub?.tier === 'consultant') {
+                      setShowClinicSettings(true);
+                    } else {
+                      alert("Clinic Branding is exclusive to the Consultant plan. Upgrade your subscription to unlock this feature.");
+                      setShowPaywall(true);
+                    }
+                  }}
                   className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
-                  <i className="fas fa-crown text-[10px] text-[#D4AF37]"></i> Branding
+                  <i className={`fas fa-crown text-[10px] ${userSub?.tier === 'consultant' ? 'text-[#D4AF37]' : 'text-gray-400'}`}></i> Branding
                 </button>
                 {userSub?.hasActiveStripeSub && (
                   <button 
@@ -445,14 +454,20 @@ const App: React.FC = () => {
               <>
                 <button 
                   type="button"
-                  onClick={() => alert("Unlock Custom Clinic Branding! Upgrade to the Consultant plan to add your own logo, doctor name, and customize report colors.")}
+                  onClick={() => {
+                    alert("Unlock Custom Clinic Branding! Upgrade to the Consultant plan to add your own logo, doctor name, and customize report colors.");
+                    setShowPaywall(true);
+                  }}
                   className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
-                  <i className="fas fa-crown text-[10px] text-[#D4AF37]"></i> Branding
+                  <i className="fas fa-crown text-[10px] text-gray-400"></i> Branding
                 </button>
                 <button 
                   type="button"
-                  onClick={() => alert("Upgrade to review past reports and follow up your patients")}
+                  onClick={() => {
+                    alert("Upgrade to review past reports and follow up your patients");
+                    setShowPaywall(true);
+                  }}
                   className="px-3 py-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5"
                 >
                   <i className="fas fa-lock text-[10px]"></i> History
@@ -669,7 +684,7 @@ const App: React.FC = () => {
           
           {!userSub?.isPro && !status.isAnalyzing && !analysis && (
             <div className={`mt-10 pb-8 ${analysis ? 'lg:col-span-12' : 'lg:col-span-1'}`}>
-              <SubscriptionTiers onCheckout={handleCheckout} isCheckingOut={isCheckingOut} />
+              <SubscriptionTiers onCheckout={handleCheckout} isCheckingOut={isCheckingOut} currentTier={userSub?.tier} />
             </div>
           )}
 
@@ -851,7 +866,7 @@ const App: React.FC = () => {
                 </p>
               </div>
 
-              <SubscriptionTiers onCheckout={handleCheckout} isCheckingOut={isCheckingOut} />
+              <SubscriptionTiers onCheckout={handleCheckout} isCheckingOut={isCheckingOut} currentTier={userSub?.tier} />
             </div>
           </div>
         </div>
