@@ -55,7 +55,7 @@ const ImageUploader: React.FC<Props> = ({ onFilesChange, files, disabled }) => {
       </div>
 
       {files.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 p-4 bg-[#f5f5f7] rounded-xl max-h-[400px] overflow-y-auto">
+        <div className="grid grid-cols-2 gap-4 p-4 bg-[#f5f5f7] dark:bg-gray-800/50 rounded-xl max-h-[400px] overflow-y-auto">
           {files.map((file, idx) => (
             <div key={idx} className="relative aspect-video rounded-lg bg-black overflow-hidden group">
               {file.type === 'image' ? (
@@ -65,7 +65,7 @@ const ImageUploader: React.FC<Props> = ({ onFilesChange, files, disabled }) => {
               )}
               <button 
                 onClick={() => onFilesChange(files.filter((_, i) => i !== idx))}
-                className="absolute top-2 right-2 bg-white/90 text-black w-6 h-6 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 right-2 bg-white/90 dark:bg-gray-900/90 text-black dark:text-white w-6 h-6 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <i className="fas fa-times text-[10px]"></i>
               </button>

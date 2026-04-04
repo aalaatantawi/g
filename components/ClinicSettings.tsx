@@ -8,7 +8,7 @@ interface ClinicSettingsProps {
   isDarkMode?: boolean;
 }
 
-const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose, onSave, isDarkMode }) => {
+const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose, onSave }) => {
   const [profile, setProfile] = useState<ClinicProfile>(initialProfile || {
     doctorName: '',
     doctorTitles: '',
@@ -67,12 +67,8 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className={`rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300 border transition-all duration-500 ${
-        isDarkMode ? 'bg-[#151518] border-gray-800 shadow-black/40' : 'bg-white border-black/5 shadow-blue-900/5'
-      }`}>
-        <div className={`p-6 flex justify-between items-center transition-colors duration-300 ${
-          isDarkMode ? 'bg-gray-900/50 text-white' : 'bg-[#1C1C1E] text-white'
-        }`}>
+      <div className="bg-white dark:bg-[#151518] rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300 border border-black/5 dark:border-gray-800 transition-all duration-500 shadow-blue-900/5 dark:shadow-black/40">
+        <div className="p-6 flex justify-between items-center bg-[#1C1C1E] dark:bg-gray-900/50 text-white transition-colors duration-300">
           <h2 className="text-xl font-black tracking-tight">Clinic Branding Settings</h2>
           <button onClick={onClose} className="text-white/70 hover:text-white transition-colors">
             <i className="fas fa-times text-xl"></i>
@@ -83,8 +79,8 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
           {message && (
             <div className={`p-4 rounded-2xl text-sm font-bold uppercase tracking-widest transition-all duration-300 ${
               message.type === 'success' 
-                ? (isDarkMode ? 'bg-green-900/20 text-green-400 border border-green-900/50' : 'bg-green-50 text-green-700 border border-green-100') 
-                : (isDarkMode ? 'bg-red-900/20 text-red-400 border border-red-900/50' : 'bg-red-50 text-red-700 border border-red-100')
+                ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900/50' 
+                : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900/50'
             }`}>
               {message.text}
             </div>
@@ -94,9 +90,7 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
             <label className="block">
               <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Clinic Logo</span>
               <div className="flex items-center gap-6">
-                <div className={`w-24 h-24 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden relative group transition-all duration-300 ${
-                  isDarkMode ? 'bg-gray-900 border-gray-800 hover:border-blue-500/50' : 'bg-gray-50 border-gray-200 hover:border-blue-500/50'
-                }`}>
+                <div className="w-24 h-24 rounded-2xl border-2 border-dashed bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-blue-500/50 transition-all duration-300 flex items-center justify-center overflow-hidden relative group">
                   {logoFile ? (
                     <img src={logoFile} alt="Clinic Logo" className="w-full h-full object-contain" />
                   ) : (
@@ -113,7 +107,7 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
                   />
                 </div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                  <p className={`mb-1 transition-colors duration-300 ${isDarkMode ? 'text-gray-400' : 'text-gray-700'}`}>Upload your clinic logo</p>
+                  <p className="mb-1 text-gray-700 dark:text-gray-400 transition-colors duration-300">Upload your clinic logo</p>
                   <p className="opacity-60">Recommended size: 400x400px. PNG or JPG.</p>
                 </div>
               </div>
@@ -127,11 +121,7 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
                   value={profile.doctorName}
                   onChange={(e) => setProfile({ ...profile, doctorName: e.target.value })}
                   placeholder="e.g., Dr. John Doe, Consultant OBGYN"
-                  className={`apple-input w-full px-5 py-4 rounded-2xl border transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                    isDarkMode 
-                      ? 'bg-gray-900 border-gray-800 text-white placeholder-gray-700 focus:border-blue-500/50' 
-                      : 'bg-gray-50 border-gray-100 text-gray-900 placeholder-gray-400 focus:border-blue-500/50'
-                  }`}
+                  className="apple-input w-full px-5 py-4 rounded-2xl border bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
                   required
                 />
               </div>
@@ -142,11 +132,7 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
                   value={profile.clinicName}
                   onChange={(e) => setProfile({ ...profile, clinicName: e.target.value })}
                   placeholder="e.g., City Women's Health Center"
-                  className={`apple-input w-full px-5 py-4 rounded-2xl border transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 ${
-                    isDarkMode 
-                      ? 'bg-gray-900 border-gray-800 text-white placeholder-gray-700 focus:border-blue-500/50' 
-                      : 'bg-gray-50 border-gray-100 text-gray-900 placeholder-gray-400 focus:border-blue-500/50'
-                  }`}
+                  className="apple-input w-full px-5 py-4 rounded-2xl border bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500/50"
                   required
                 />
               </div>
@@ -158,11 +144,7 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
                 value={profile.contactInfo}
                 onChange={(e) => setProfile({ ...profile, contactInfo: e.target.value })}
                 placeholder="Phone number, Address, WhatsApp, etc."
-                className={`apple-input w-full px-5 py-4 rounded-2xl border transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 h-24 resize-none ${
-                  isDarkMode 
-                    ? 'bg-gray-900 border-gray-800 text-white placeholder-gray-700 focus:border-blue-500/50' 
-                    : 'bg-gray-50 border-gray-100 text-gray-900 placeholder-gray-400 focus:border-blue-500/50'
-                }`}
+                className="apple-input w-full px-5 py-4 rounded-2xl border bg-gray-50 dark:bg-gray-900 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/10 h-24 resize-none focus:border-blue-500/50"
                 required
               />
             </div>
@@ -172,11 +154,7 @@ const ClinicSettings: React.FC<ClinicSettingsProps> = ({ initialProfile, onClose
             <button
               type="button"
               onClick={onClose}
-              className={`flex-1 py-4 rounded-2xl border font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${
-                isDarkMode 
-                  ? 'bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700 hover:text-white' 
-                  : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-              }`}
+              className="flex-1 py-4 rounded-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-black uppercase tracking-widest text-[10px] transition-all duration-300"
             >
               Cancel
             </button>

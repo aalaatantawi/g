@@ -417,13 +417,13 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
     return (
       <div className="flex flex-wrap gap-3 justify-center my-6">
         <Toaster />
-        <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 bg-[#f5f5f7] hover:bg-[#ebebed] rounded-lg text-sm font-bold text-[#3A3A3C] transition-all">
+        <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 bg-[#f5f5f7] dark:bg-gray-800 hover:bg-[#ebebed] dark:hover:bg-gray-700 rounded-lg text-sm font-bold text-[#3A3A3C] dark:text-gray-300 transition-all">
           <i className={`fas ${printing ? 'fa-spinner animate-spin' : 'fa-print'}`}></i> {printing ? 'Preparing...' : 'Print'}
         </button>
         <button onClick={() => setShowModify(true)} className="flex items-center gap-2 px-4 py-2 bg-[#d4af37] hover:bg-[#b8962f] rounded-lg text-sm font-bold text-white transition-all">
           <i className="fas fa-edit"></i> Modify Report
         </button>
-        <button onClick={handleCopy} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${copied ? 'bg-green-100 text-green-800' : 'bg-[#f5f5f7] hover:bg-[#ebebed] text-[#3A3A3C]'}`}>
+        <button onClick={handleCopy} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${copied ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : 'bg-[#f5f5f7] dark:bg-gray-800 hover:bg-[#ebebed] dark:hover:bg-gray-700 text-[#3A3A3C] dark:text-gray-300'}`}>
           <i className={`fas ${copied ? 'fa-check' : 'fa-copy'}`}></i> {copied ? 'Copied!' : 'Copy'}
         </button>
         <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(cleanMarkdown(analysis.reportMarkdown))}`, '_blank')} className="flex items-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#128C7E] rounded-lg text-sm font-bold text-white transition-all">
@@ -438,22 +438,22 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
         <button onClick={handleEmail} className="flex items-center gap-2 px-4 py-2 bg-[#8E8E93] hover:bg-[#636366] rounded-lg text-sm font-bold text-white transition-all">
           <i className="fas fa-envelope"></i> Email
         </button>
-        <button onClick={() => setShowQR(!showQR)} className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-zinc-800 rounded-lg text-sm font-bold text-white transition-all">
+        <button onClick={() => setShowQR(!showQR)} className="flex items-center gap-2 px-4 py-2 bg-black dark:bg-zinc-800 hover:bg-zinc-800 dark:hover:bg-zinc-700 rounded-lg text-sm font-bold text-white transition-all">
           <i className="fas fa-qrcode"></i> Share QR
         </button>
 
         {showModify && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6" onClick={() => setShowModify(false)}>
-            <div className="bg-white p-8 rounded-2xl max-w-lg w-full shadow-2xl animate-in zoom-in duration-300" onClick={e => e.stopPropagation()}>
-              <h3 className="text-xl font-black mb-4">Modify Report</h3>
+            <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl max-w-lg w-full shadow-2xl animate-in zoom-in duration-300" onClick={e => e.stopPropagation()}>
+              <h3 className="text-xl font-black mb-4 dark:text-white">Modify Report</h3>
               <textarea
                 value={modifyComment}
                 onChange={(e) => setModifyComment(e.target.value)}
                 placeholder="Enter changes, additions, or corrections to the report..."
-                className="w-full min-h-[150px] p-4 rounded-xl border border-zinc-200 mb-6 focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
+                className="w-full min-h-[150px] p-4 rounded-xl border border-zinc-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-black dark:text-white mb-6 focus:ring-2 focus:ring-[#d4af37] focus:border-transparent"
               />
               <div className="flex gap-4">
-                <button onClick={() => setShowModify(false)} className="flex-1 py-3 bg-zinc-100 text-zinc-600 rounded-xl font-bold text-sm uppercase tracking-widest">Cancel</button>
+                <button onClick={() => setShowModify(false)} className="flex-1 py-3 bg-zinc-100 dark:bg-gray-800 text-zinc-600 dark:text-gray-400 rounded-xl font-bold text-sm uppercase tracking-widest">Cancel</button>
                 <button onClick={handleModify} className="flex-1 py-3 bg-[#d4af37] text-white rounded-xl font-bold text-sm uppercase tracking-widest">Regenerate</button>
               </div>
             </div>
@@ -462,18 +462,18 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
 
         {showQR && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6" onClick={() => setShowQR(false)}>
-            <div className="bg-white p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl animate-in zoom-in duration-300" onClick={e => e.stopPropagation()}>
-              <h3 className="text-xl font-black mb-2">Patient Report Access</h3>
-              <p className="text-xs text-zinc-500 mb-6 uppercase tracking-widest font-bold">Patient can scan this to view their report</p>
-              <div className="bg-zinc-50 p-6 rounded-xl border-2 border-dashed border-zinc-200 flex justify-center mb-6">
+            <div className="bg-white dark:bg-[#1E1E1E] p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl animate-in zoom-in duration-300" onClick={e => e.stopPropagation()}>
+              <h3 className="text-xl font-black mb-2 dark:text-white">Patient Report Access</h3>
+              <p className="text-xs text-zinc-500 dark:text-gray-400 mb-6 uppercase tracking-widest font-bold">Patient can scan this to view their report</p>
+              <div className="bg-zinc-50 dark:bg-gray-900 p-6 rounded-xl border-2 border-dashed border-zinc-200 dark:border-gray-800 flex justify-center mb-6">
                 <QRCodeSVG value={reportUrl} size={200} />
               </div>
-              <p className="text-[10px] text-zinc-400 leading-relaxed mb-6">
+              <p className="text-[10px] text-zinc-400 dark:text-gray-500 leading-relaxed mb-6">
                 1. Patient opens their phone camera.<br/>
                 2. Scan this code to access the digital report.<br/>
                 3. They can save or print it from their own device.
               </p>
-              <button onClick={() => setShowQR(false)} className="w-full py-3 bg-black text-white rounded-xl font-bold text-sm uppercase tracking-widest">
+              <button onClick={() => setShowQR(false)} className="w-full py-3 bg-black dark:bg-zinc-800 text-white rounded-xl font-bold text-sm uppercase tracking-widest">
                 Close
               </button>
             </div>
@@ -488,7 +488,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
     const parts = text.split(/(\*\*.*?\*\*)/g);
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
-        return <span key={index} className="font-bold text-black">{part.slice(2, -2)}</span>;
+        return <span key={index} className="font-bold text-black dark:text-white">{part.slice(2, -2)}</span>;
       }
       return part;
     });
@@ -540,22 +540,22 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
           const body = tableRows.slice(2); 
           
           elements.push(
-            <div key={i} className="overflow-x-auto my-8 apple-card border border-black/5 shadow-sm">
+            <div key={i} className="overflow-x-auto my-8 apple-card border border-black/5 dark:border-white/10 shadow-sm">
               <table className="w-full text-left text-sm border-collapse">
-                <thead className="bg-[#F2F2F7] text-[#1C1C1E] uppercase text-[10px] font-bold tracking-widest">
+                <thead className="bg-[#F2F2F7] dark:bg-gray-800 text-[#1C1C1E] dark:text-white uppercase text-[10px] font-bold tracking-widest">
                   <tr>
                     {headers.map((h, idx) => (
-                      <th key={idx} className="px-6 py-4 border-b border-black/10">
+                      <th key={idx} className="px-6 py-4 border-b border-black/10 dark:border-white/10">
                         {parseInlineBold(h)}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-black/5">
+                <tbody className="divide-y divide-black/5 dark:divide-white/5">
                   {body.map((row, rIdx) => (
-                    <tr key={rIdx} className={`${rIdx % 2 === 0 ? 'bg-white' : 'bg-[#F9F9FB]'} hover:bg-[#007AFF]/5 transition-colors`}>
+                    <tr key={rIdx} className={`${rIdx % 2 === 0 ? 'bg-white dark:bg-[#1E1E1E]' : 'bg-[#F9F9FB] dark:bg-gray-900/30'} hover:bg-[#007AFF]/5 transition-colors`}>
                       {row.map((cell, cIdx) => (
-                        <td key={cIdx} className="px-6 py-4 text-[#3A3A3C] font-medium leading-relaxed">
+                        <td key={cIdx} className="px-6 py-4 text-[#3A3A3C] dark:text-gray-300 font-medium leading-relaxed">
                           {parseInlineBold(cell)}
                         </td>
                       ))}
@@ -574,7 +574,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
       if (trimmed.startsWith('#')) {
         const content = trimmed.replace(/^#+\s*/, '').replace(/\*\*/g, '');
         elements.push(
-          <h4 key={i} className="text-sm font-bold text-[#86868b] uppercase tracking-widest mt-10 mb-4 border-b border-black/5 pb-2">
+          <h4 key={i} className="text-sm font-bold text-[#86868b] dark:text-gray-400 uppercase tracking-widest mt-10 mb-4 border-b border-black/5 dark:border-white/10 pb-2">
             {content}
           </h4>
         );
@@ -587,7 +587,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
       if (trimmed.startsWith('**') && trimmed.endsWith('**') && trimmed.length < 60) {
         const content = trimmed.replace(/\*\*/g, '');
         elements.push(
-          <h5 key={i} className="text-lg font-bold text-black mt-8 mb-3 tracking-tight">
+          <h5 key={i} className="text-lg font-bold text-black dark:text-white mt-8 mb-3 tracking-tight">
             {content}
           </h5>
         );
@@ -601,10 +601,10 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
       if (keyValMatch) {
          elements.push(
             <div key={i} className="flex flex-col sm:flex-row gap-1 sm:gap-4 mb-3 text-base">
-                <span className="font-semibold text-[#86868b] sm:w-40 shrink-0 text-sm sm:text-base uppercase sm:normal-case tracking-wide sm:tracking-normal pt-1 sm:pt-0">
+                <span className="font-semibold text-[#86868b] dark:text-gray-400 sm:w-40 shrink-0 text-sm sm:text-base uppercase sm:normal-case tracking-wide sm:tracking-normal pt-1 sm:pt-0">
                   {keyValMatch[1]}
                 </span>
-                <span className="text-black/90 leading-relaxed font-medium">
+                <span className="text-black/90 dark:text-white/90 leading-relaxed font-medium">
                   {parseInlineBold(keyValMatch[2])}
                 </span>
             </div>
@@ -619,7 +619,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
         elements.push(
           <div key={i} className="flex gap-3 mb-2 pl-2">
             <span className="text-[#d4af37] text-xs mt-1.5 shrink-0">●</span>
-            <p className="text-base text-black/80 leading-relaxed">
+            <p className="text-base text-black/80 dark:text-white/80 leading-relaxed">
               {parseInlineBold(content)}
             </p>
           </div>
@@ -635,7 +635,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
             elements.push(
                 <div key={i} className="flex gap-3 mb-3 mt-2">
                     <span className="text-base font-bold text-[#d4af37]">{match[1]}.</span>
-                    <p className="text-base text-black/90 leading-relaxed font-medium">
+                    <p className="text-base text-black/90 dark:text-white/90 leading-relaxed font-medium">
                         {parseInlineBold(match[2])}
                     </p>
                 </div>
@@ -647,7 +647,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
 
       // 6. Regular paragraphs
       elements.push(
-        <p key={i} className="text-base text-black/70 leading-8 mb-5">
+        <p key={i} className="text-base text-black/70 dark:text-white/70 leading-8 mb-5">
           {parseInlineBold(line)}
         </p>
       );
@@ -660,51 +660,51 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
     <div className="flex flex-col gap-12 animate-in fade-in duration-1000">
       <div className="apple-card overflow-hidden">
         {/* Header Section */}
-        <div className="bg-[#f5f5f7] border-b border-black/5 px-8 py-4 flex flex-col items-center">
+        <div className="bg-[#f5f5f7] dark:bg-gray-900/50 border-b border-black/5 dark:border-white/10 px-8 py-4 flex flex-col items-center">
           <div className="w-full flex justify-between items-center mb-4">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 rounded-full bg-[#d4af37]"></div>
-              <h2 className="text-[10px] font-bold text-[#86868b] uppercase tracking-widest">Clinical Dossier</h2>
+              <h2 className="text-[10px] font-bold text-[#86868b] dark:text-gray-400 uppercase tracking-widest">Clinical Dossier</h2>
             </div>
           </div>
           <ActionButtons />
         </div>
         
-        <div className="p-8 md:p-12 relative bg-white">
+        <div className="p-8 md:p-12 relative bg-white dark:bg-[#1E1E1E]">
           {isUpdating && (
-            <div className="absolute inset-0 bg-white/90 z-50 flex flex-col items-center justify-center transition-all backdrop-blur-sm">
-              <div className="w-8 h-8 border-2 border-black/10 border-t-[#d4af37] rounded-full animate-spin mb-4"></div>
-              <p className="text-[10px] font-bold text-[#86868b] uppercase tracking-widest">Updating Clinical Context...</p>
+            <div className="absolute inset-0 bg-white/90 dark:bg-[#1E1E1E]/90 z-50 flex flex-col items-center justify-center transition-all backdrop-blur-sm">
+              <div className="w-8 h-8 border-2 border-black/10 dark:border-white/10 border-t-[#d4af37] rounded-full animate-spin mb-4"></div>
+              <p className="text-[10px] font-bold text-[#86868b] dark:text-gray-400 uppercase tracking-widest">Updating Clinical Context...</p>
             </div>
           )}
 
           {/* Title Area */}
-          <div className="flex flex-col md:flex-row justify-between items-start border-b border-black/5 pb-8 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start border-b border-black/5 dark:border-white/10 pb-8 mb-8">
             {isPro && clinic ? (
               <div className="flex items-start gap-6 w-full">
                 {clinic.logoUrl && (
-                  <div className="w-24 h-24 rounded-2xl overflow-hidden border border-black/5 shrink-0 bg-[#FAF9F6] flex items-center justify-center">
+                  <div className="w-24 h-24 rounded-2xl overflow-hidden border border-black/5 dark:border-white/10 shrink-0 bg-[#FAF9F6] dark:bg-gray-800 flex items-center justify-center">
                     <img src={clinic.logoUrl} alt="Clinic Logo" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                   </div>
                 )}
                 <div className="flex-1">
-                  <h1 className="text-2xl md:text-3xl font-black tracking-tight text-[#1C1C1E] mb-1">{clinic.clinicName}</h1>
-                  <h2 className="text-lg font-bold text-[#5B6876] mb-2">{clinic.doctorName}</h2>
-                  <p className="text-xs text-[#86868b] font-medium leading-relaxed whitespace-pre-line">{clinic.contactInfo}</p>
+                  <h1 className="text-2xl md:text-3xl font-black tracking-tight text-[#1C1C1E] dark:text-white mb-1">{clinic.clinicName}</h1>
+                  <h2 className="text-lg font-bold text-[#5B6876] dark:text-gray-300 mb-2">{clinic.doctorName}</h2>
+                  <p className="text-xs text-[#86868b] dark:text-gray-400 font-medium leading-relaxed whitespace-pre-line">{clinic.contactInfo}</p>
                 </div>
                 <div className="text-right hidden md:block">
                   <div className="text-[10px] font-bold text-[#d4af37] uppercase tracking-widest mb-1">Diagnostic Report</div>
-                  <div className="text-xs font-medium text-[#86868b]">{analysis.timestamp}</div>
+                  <div className="text-xs font-medium text-[#86868b] dark:text-gray-400">{analysis.timestamp}</div>
                 </div>
               </div>
             ) : (
               <>
                 <div>
-                  <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-2 text-black">Diagnostic Report</h1>
+                  <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-2 text-black dark:text-white">Diagnostic Report</h1>
                   <p className="text-xs font-bold text-[#d4af37] uppercase tracking-[0.2em]">Fetal Medicine Foundation Protocol</p>
                 </div>
                 <div className="text-right mt-4 md:mt-0">
-                   <div className="text-xs font-medium text-[#86868b]">Generated: {analysis.timestamp}</div>
+                   <div className="text-xs font-medium text-[#86868b] dark:text-gray-400">Generated: {analysis.timestamp}</div>
                 </div>
               </>
             )}
@@ -720,12 +720,12 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
             </div>
 
             {/* DISCLAIMER SECTION */}
-            <div className="mt-16 pt-8 border-t border-black/5">
-                <div className="bg-[#f5f5f7] p-6 rounded-xl border border-black/5">
-                    <h6 className="text-black font-bold uppercase tracking-widest text-xs mb-3">
+            <div className="mt-16 pt-8 border-t border-black/5 dark:border-white/10">
+                <div className="bg-[#f5f5f7] dark:bg-gray-900/50 p-6 rounded-xl border border-black/5 dark:border-white/10">
+                    <h6 className="text-black dark:text-white font-bold uppercase tracking-widest text-xs mb-3">
                         <i className="fas fa-gavel mr-2"></i>Legal Disclaimer & Copyright
                     </h6>
-                    <p className="text-[#86868b] text-xs leading-relaxed font-medium text-justify">
+                    <p className="text-[#86868b] dark:text-gray-400 text-xs leading-relaxed font-medium text-justify">
                         This application (OGXAI) is currently in a training phase. This AI system <strong>DOES NOT</strong> replace professional medical judgment. 
                         All findings must be independently verified by a qualified specialist. 
                         <br/><br/>
@@ -744,8 +744,8 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
 
           {/* Footer / Grounding */}
           {analysis.groundingSources && analysis.groundingSources.length > 0 && (
-            <div className="mt-8 pt-8 border-t border-black/5">
-              <h4 className="text-[10px] font-bold text-[#86868b] mb-4 uppercase tracking-widest">Verified References</h4>
+            <div className="mt-8 pt-8 border-t border-black/5 dark:border-white/10">
+              <h4 className="text-[10px] font-bold text-[#86868b] dark:text-gray-400 mb-4 uppercase tracking-widest">Verified References</h4>
               <div className="flex flex-wrap gap-2">
                 {analysis.groundingSources.map((source, idx) => (
                   <a 
@@ -753,7 +753,7 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
                     href={source.uri}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#ebebed] text-[#3A3A3C] text-[11px] font-medium rounded-md transition-all truncate max-w-[200px]"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#f5f5f7] dark:bg-gray-800 hover:bg-[#ebebed] dark:hover:bg-gray-700 text-[#3A3A3C] dark:text-gray-300 text-[11px] font-medium rounded-md transition-all truncate max-w-[200px]"
                   >
                     <i className="fas fa-link text-[#d4af37]"></i>
                     <span className="truncate">{source.title}</span>
@@ -765,10 +765,10 @@ const ReportDisplay: React.FC<Props> = ({ analysis, onUpdate, isUpdating, onRese
 
           {/* Actions */}
           {onReset && (
-            <div className="mt-20 flex flex-col items-center border-t border-black/5 pt-10">
+            <div className="mt-20 flex flex-col items-center border-t border-black/5 dark:border-white/10 pt-10">
               <button 
                 onClick={onReset}
-                className="group flex items-center gap-3 px-10 py-4 rounded-full bg-[#E5E5EA] text-[#3A3A3C] hover:bg-red-50 hover:text-red-900 transition-all hover:scale-105 hover:shadow-lg"
+                className="group flex items-center gap-3 px-10 py-4 rounded-full bg-[#E5E5EA] dark:bg-gray-800 text-[#3A3A3C] dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-900 dark:hover:text-red-400 transition-all hover:scale-105 hover:shadow-lg"
               >
                 <i className="fas fa-redo-alt text-sm"></i>
                 <span className="text-sm font-bold uppercase tracking-wider">End Session & New Exam</span>

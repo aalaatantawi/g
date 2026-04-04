@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Lock, X } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 
 const Header: React.FC = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
 
   useEffect(() => {
     if (isDarkMode) {
@@ -23,6 +28,14 @@ const Header: React.FC = () => {
             </span>
           </a>
         </div>
+
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/20 transition-all"
+          aria-label="Toggle Dark Mode"
+        >
+          {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </div>
     </header>
   );
