@@ -441,7 +441,7 @@ const App: React.FC = () => {
             </div>
           </div>
             <div className="flex items-center gap-2">
-            {userSub?.isPro ? (
+            {userSub?.hasActiveStripeSub ? (
               <>
                 <button 
                   type="button"
@@ -749,7 +749,7 @@ const App: React.FC = () => {
             </motion.div>
           )}
           
-          {!userSub?.isPro && (
+          {(userSub?.tier === 'starter' || !userSub?.isPro) && (
             <div className={`mt-10 pb-8 ${analysis ? 'lg:col-span-12' : 'lg:col-span-1'}`}>
               <SubscriptionTiers onCheckout={handleCheckout} isCheckingOut={isCheckingOut} currentTier={userSub?.tier} />
             </div>
